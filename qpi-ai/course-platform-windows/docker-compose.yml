@@ -1,0 +1,71 @@
+version: "3.8"
+
+services:
+  windows:
+    image: dockurr/windows
+    container_name: qpi-ai-course
+    environment:
+      # Windows Version
+      VERSION: "11"
+      
+      # Performance Settings
+      CPU_CORES: "4"          # Adjust based on your server specs
+      RAM_SIZE: "8G"          # Recommended for smooth performance
+      
+      # Disk Configuration
+      DISK_SIZE: "128G"       # Adequate space for course materials
+      
+      # User Credentials
+      USERNAME: "student"
+      PASSWORD: "Course2024!"
+      
+      # Localization
+      LANGUAGE: "English"
+      REGION: "en-US"
+      KEYBOARD: "en-US"
+      
+      # Optional: Custom arguments for advanced users
+      # ARGUMENTS: "-device usb-host,vendorid=0x1234,productid=0x1234"
+      
+    devices:
+      - /dev/kvm              # Required for hardware acceleration
+      - /dev/net/tun          # Required for networking
+      # - /dev/vhost-net      # Uncomment for DHCP mode
+    
+    cap_add:
+      - NET_ADMIN             # Required for network configuration
+    
+    # Device control rules (uncomment for DHCP mode)
+    # device_cgroup_rules:
+    #   - 'c *:* rwm'
+    
+    ports:
+      - "8006:8006"           # Web viewer port
+      - "3389:3389/tcp"       # RDP port TCP
+      - "3389:3389/udp"       # RDP port UDP
+    
+    volumes:
+      - ./windows-data:/storage              # Windows system storage
+      - ./course-materials:/data             # Shared course materials
+      - ./student-scripts:/oem               # Custom installation scripts
+    
+    restart: unless-stopped   # Better than 'always' for manual stops
+    stop_grace_period: 2m     # Graceful shutdown time
+    
+    # Resource limits (optional but recommended for multi-user)
+    deploy:
+      resources:
+        limits:
+          memory: 10G         # Slightly more than RAM_SIZE for overhead
+          cpus: '4.0'
+        reservations:
+          memory: 6G
+          cpus: '2.0'
+
+# Optional: Network configuration for isolated instances
+# networks:
+#   windows-net:
+#     driver: bridge
+#     ipam:
+#       config:
+#         - subnet: 172.20.0.0/16
