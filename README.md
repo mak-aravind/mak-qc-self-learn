@@ -1,1 +1,1 @@
-# mak-qc-self-learn
+# second-brain-actions
