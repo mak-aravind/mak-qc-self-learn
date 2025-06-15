@@ -1,0 +1,7 @@
+{
+	"nodes":[
+		{"id":"ca65967d3d2d0b82","x":508,"y":584,"width":400,"height":400,"type":"file","file":"second-brain/k8s-cert-exams/CKA-CKS-Prepartion/CKA/notes/010-Cluster-Architecture/mermaids/k8s-communication-flow.md"},
+		{"id":"3834b113017fa3f3","x":-328,"y":-197,"width":628,"height":3877,"type":"file","file":"second-brain/k8s-cert-exams/CKA-CKS-Prepartion/CKA/notes/014-kube-API-server/notes/014-kube-API-server-notes.md"}
+	],
+	"edges":[]
+}

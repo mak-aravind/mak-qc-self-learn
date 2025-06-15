@@ -1,0 +1,10 @@
+{
+	"nodes":[
+		{"id":"8fa34b5b8314fae4","type":"file","file":"second-brain/k8s-cert-exams/CKA-CKS-Prepartion/CKA/notes/010-Cluster-Architecture/notes/010-Cluster-Architecture-notes.md","x":3740,"y":-500,"width":640,"height":5340},
+		{"id":"939f56b586d9c767","type":"file","file":"second-brain/k8s-cert-exams/CKA-CKS-Prepartion/CKA/notes/010-Cluster-Architecture/mermaids/k8s-cluster-Architecture-Cargo-Analogy.md","x":0,"y":1120,"width":3673,"height":1840},
+		{"id":"248c74cf8f7c9890","type":"file","file":"second-brain/k8s-cert-exams/CKA-CKS-Prepartion/CKA/notes/010-Cluster-Architecture/mermaids/k8s-cluster-Architecture-Overview.md","x":60,"y":-260,"width":3373,"height":1140},
+		{"id":"95b9932a7c439152","type":"file","file":"second-brain/k8s-cert-exams/CKA-CKS-Prepartion/CKA/notes/010-Cluster-Architecture/mermaids/k8s-troubleshooting-flow.md","x":4440,"y":-350,"width":3433,"height":2110},
+		{"id":"37deb6b1aac12855","type":"file","file":"second-brain/k8s-cert-exams/CKA-CKS-Prepartion/CKA/notes/010-Cluster-Architecture/mermaids/k8s-communication-flow.md","x":4440,"y":1920,"width":3433,"height":1840}
+	],
+	"edges":[]
+}

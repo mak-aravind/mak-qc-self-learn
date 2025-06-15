@@ -1,0 +1,10 @@
+{
+	"nodes":[
+		{"id":"2b06397829d0b957","type":"file","file":"second-brain/k8s-cert-exams/CKA-CKS-Prepartion/CKA/notes/011-Docker-vs-ContainerD/notes/011-Docker-vs-ContainerD-notes.md","x":-1120,"y":-480,"width":1100,"height":2080},
+		{"id":"587ff2b071be826d","type":"file","file":"second-brain/k8s-cert-exams/CKA-CKS-Prepartion/CKA/notes/011-Docker-vs-ContainerD/mermaids/011-Docker-vs-ContainerD-mermaid.md","x":320,"y":-160,"width":2787,"height":1202},
+		{"id":"4f7fcec60452c059","type":"file","file":"second-brain/k8s-cert-exams/z00-assets/Pasted image 20250614190819.png","x":2500,"y":1120,"width":400,"height":338},
+		{"id":"c86ab746e75e5cf7","type":"file","file":"second-brain/k8s-cert-exams/z00-assets/Pasted image 20250614191619.png","x":3160,"y":680,"width":2866,"height":280},
+		{"id":"886f3fd4cb8da85a","type":"file","file":"second-brain/k8s-cert-exams/z00-assets/Pasted image 20250614194517.png","x":1240,"y":1120,"width":1100,"height":485}
+	],
+	"edges":[]
+}

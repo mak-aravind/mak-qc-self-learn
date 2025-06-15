@@ -1,0 +1,13 @@
+{
+	"nodes":[
+		{"id":"f4695bc9845f12c1","type":"file","file":"second-brain/k8s-cert-exams/CKA-CKS-Prepartion/CKA/notes/012-ETCD-For-Beginners/notes/012-ETCD-For-Beginners-notes.md","x":-340,"y":-440,"width":680,"height":4220},
+		{"id":"9f7d4a0dbd90a313","type":"file","file":"second-brain/k8s-cert-exams/CKA-CKS-Prepartion/CKA/notes/012-ETCD-For-Beginners/mermaids/02-Key-Value Store vs Traditional Database Comparison.md","x":-1240,"y":-440,"width":734,"height":973},
+		{"id":"ae029f1412d5c26f","type":"file","file":"second-brain/k8s-cert-exams/CKA-CKS-Prepartion/CKA/notes/012-ETCD-For-Beginners/mermaids/01-ETCD-Version Evolution Timeline.md","x":-1360,"y":2020,"width":811,"height":651},
+		{"id":"74c9ad19f7520f62","type":"file","file":"second-brain/k8s-cert-exams/CKA-CKS-Prepartion/CKA/notes/012-ETCD-For-Beginners/mermaids/03-ETCDCTL-Command-Decision-Tree.md","x":500,"y":2540,"width":860,"height":1807},
+		{"id":"260f1c9e45678336","type":"file","file":"second-brain/k8s-cert-exams/CKA-CKS-Prepartion/CKA/notes/012-ETCD-For-Beginners/mermaids/04-ETCD-Arch-Overview.md","x":420,"y":500,"width":1371,"height":800},
+		{"id":"0f72723bcd540ce2","type":"file","file":"second-brain/k8s-cert-exams/z00-assets/Pasted image 20250614231456.png","x":-1800,"y":795,"width":1226,"height":645},
+		{"id":"aa070ffcdabb45ae","x":420,"y":1380,"width":1040,"height":506,"type":"file","file":"second-brain/k8s-cert-exams/z00-assets/Pasted image 20250614231655.png"},
+		{"id":"3299ce098e459d98","x":420,"y":1960,"width":940,"height":529,"type":"file","file":"second-brain/k8s-cert-exams/z00-assets/Pasted image 20250614231817.png"}
+	],
+	"edges":[]
+}
