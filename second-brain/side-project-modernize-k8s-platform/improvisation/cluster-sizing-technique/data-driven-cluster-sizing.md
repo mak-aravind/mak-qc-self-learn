@@ -1,0 +1,6 @@
+Data-Driven Sizing Guide: 
+Fredrik discussed the development of a data-driven sizing guide for cloud customers, focusing on the importance of selecting the right data and combining it in meaningful ways. He emphasized the use of tools like Orange for modeling and analyzing data.
+	Data Selection: Fredrik emphasized the importance of selecting the right data for developing a data-driven sizing guide. The team collects data from cloud customers and processes it to create a guide that is always up to date and relevant.
+	Combining Data: Combining different data dimensions is crucial for gaining insights. Fredrik explained how combining CPU data with concurrent user data revealed a strong correlation, making concurrent users a good input for the sizing model.
+	Modeling Tools: Fredrik recommended using tools like Orange for modeling and analyzing data. Orange allows for building and testing data models, which can then be used to make informed decisions about resource allocation and sizing for cloud customers.
+	Customer Clustering: By clustering customers based on their usage patterns and resource intensity, the team can better classify and size customers. This approach helps in identifying resource-hungry customers and optimizing resource allocation accordingly.
