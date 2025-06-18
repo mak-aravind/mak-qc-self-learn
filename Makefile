@@ -10,7 +10,7 @@ setup-git: setup-ssh setup-config setup-remote test-connection
 # Start SSH agent and add key
 setup-ssh:
 	@echo "Setting up SSH agent and adding key..."
-	@eval "$$(ssh-agent -s)" && ssh-add ~/.ssh/git-mak-aravind
+	@eval "$$(ssh-agent -s)" && ssh-add ~/.ssh/id_rsa_aravind_personal-repo_gitHub
 	@echo "SSH key added successfully"
 
 # Configure git user settings (both local and global)

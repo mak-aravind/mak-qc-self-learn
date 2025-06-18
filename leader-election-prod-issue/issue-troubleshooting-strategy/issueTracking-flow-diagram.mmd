@@ -1,0 +1,99 @@
+flowchart TD
+    Start([🚨 Issue Detected]) --> CheckCluster{Check Cluster<br/>Health}
+    
+    CheckCluster -->|Healthy| CheckNodes{Check Node<br/>Status}
+    CheckCluster -->|Unhealthy| MasterIssue[🔴 Master Node Issues]
+    
+    MasterIssue --> APIDown{API Server<br/>Down?}
+    APIDown -->|Yes| FixAPI[🔧 Restart API Server<br/>Check etcd connectivity]
+    APIDown -->|No| CheckEtcd{etcd<br/>Issues?}
+    
+    CheckEtcd -->|Yes| FixEtcd[🔧 etcd Recovery<br/>Check cluster members]
+    CheckEtcd -->|No| CheckScheduler{Scheduler<br/>Issues?}
+    
+    CheckScheduler -->|Yes| FixScheduler[🔧 Restart Scheduler<br/>Check API connectivity]
+    CheckScheduler -->|No| CheckControllers[🔧 Check Controllers<br/>Review logs]
+    
+    CheckNodes -->|NotReady| NodeIssue[🔴 Worker Node Issues]
+    CheckNodes -->|Ready| CheckPods{Check Pod<br/>Status}
+    
+    NodeIssue --> KubeletDown{Kubelet<br/>Running?}
+    KubeletDown -->|No| FixKubelet[🔧 Restart Kubelet<br/>Check configuration]
+    KubeletDown -->|Yes| CheckRuntime{Container Runtime<br/>Issues?}
+    
+    CheckRuntime -->|Yes| FixRuntime[🔧 Restart Runtime<br/>Check Docker/containerd]
+    CheckRuntime -->|No| CheckNetwork{Network<br/>Issues?}
+    
+    CheckNetwork -->|Yes| FixNetwork[🔧 Check kube-proxy<br/>Verify CNI plugin]
+    CheckNetwork -->|No| CheckResources[🔧 Check Resources<br/>CPU/Memory/Disk]
+    
+    CheckPods -->|Pending| PodScheduling{Scheduling<br/>Issues?}
+    CheckPods -->|Running| CheckApp{Application<br/>Issues?}
+    CheckPods -->|Failed| PodFailure[🔴 Pod Failures]
+    
+    PodScheduling --> CheckTaints[🔧 Check Taints/Tolerations<br/>Node Affinity<br/>Resource Limits]
+    
+    PodFailure --> CheckLogs{Check Pod<br/>Logs}
+    CheckLogs --> ImageIssue{Image Pull<br/>Errors?}
+    ImageIssue -->|Yes| FixImage[🔧 Check Image Registry<br/>Pull Secrets<br/>Image Name/Tag]
+    ImageIssue -->|No| ConfigIssue{Config<br/>Errors?}
+    
+    ConfigIssue -->|Yes| FixConfig[🔧 Check ConfigMaps<br/>Secrets<br/>Environment Variables]
+    ConfigIssue -->|No| ResourceLimit[🔧 Check Resource Limits<br/>Requests vs Limits]
+    
+    %% Enhanced Application Issues Branch
+    CheckApp --> AppLogs[🔧 Check Application Logs<br/>Service Configuration<br/>Ingress Rules]
+    AppLogs --> LeaderElectionIssue{Leader Election<br/>Errors?}
+    
+    %% Leader Election Branch
+    LeaderElectionIssue -->|Yes| LeaderElectionFlow[🔴 Leader Election Issues]
+    LeaderElectionIssue -->|No| NetworkConnectivity{Network<br/>Connectivity Issues?}
+    
+    LeaderElectionFlow --> CheckLease{Check Lease<br/>Object Status}
+    CheckLease --> LeaseHealthy{Lease<br/>Healthy?}
+    
+    LeaseHealthy -->|No| FixLease[🔧 Delete/Recreate Lease<br/>Check RBAC permissions]
+    LeaseHealthy -->|Yes| CheckAPIConnectivity{API Server<br/>Connectivity?}
+    
+    CheckAPIConnectivity -->|Failed| APIConnectivityIssue[🔧 Network Path Analysis<br/>Test from Pod to API]
+    CheckAPIConnectivity -->|Intermittent| TuneLeaderElection[🔧 Tune Leader Election<br/>Increase timeouts<br/>Retry parameters]
+    
+    %% Network Connectivity Branch
+    NetworkConnectivity -->|Yes| NetworkDiagnostics[🔧 Network Diagnostics<br/>Pod-to-API connectivity<br/>DNS resolution]
+    NetworkConnectivity -->|No| StandardAppIssues[🔧 Standard App Issues<br/>Performance/Logic errors]
+    
+    NetworkDiagnostics --> NetworkPathTest{Test Network<br/>Path}
+    NetworkPathTest -->|Failed| ReturnToNetworkFix[Return to Network Issues]
+    NetworkPathTest -->|Intermittent| ConnectionStability[🔧 Check Connection Stability<br/>Monitor packet drops<br/>Firewall rules]
+    
+    ReturnToNetworkFix --> CheckNetwork
+    
+    %% Common Commands - Enhanced
+    FixAPI --> Commands1[💻 kubectl cluster-info<br/>kubectl get nodes<br/>systemctl status kube-apiserver]
+    FixEtcd --> Commands2[💻 etcdctl cluster-health<br/>kubectl get pods -n kube-system<br/>systemctl status etcd]
+    FixKubelet --> Commands3[💻 systemctl status kubelet<br/>journalctl -u kubelet<br/>kubectl describe node]
+    FixRuntime --> Commands4[💻 docker ps<br/>systemctl status docker<br/>crictl ps]
+    FixNetwork --> Commands5[💻 kubectl get pods -n kube-system<br/>kubectl describe pod kube-proxy<br/>ip route show]
+    CheckLogs --> Commands6[💻 kubectl logs pod<br/>kubectl describe pod<br/>kubectl get events]
+    
+    %% New Leader Election Commands
+    CheckLease --> Commands7[💻 kubectl get lease -n namespace<br/>kubectl describe lease lease-name<br/>kubectl get lease lease-name -w]
+    TuneLeaderElection --> Commands8[💻 Update deployment args:<br/>--leader-elect-lease-duration=30s<br/>--leader-elect-renew-deadline=20s<br/>--leader-elect-retry-period=5s]
+    APIConnectivityIssue --> Commands9[💻 kubectl exec pod -- nc -zv api-ip 443<br/>kubectl exec pod -- curl -k https://api/healthz<br/>tcpdump -i any host api-ip]
+    NetworkDiagnostics --> Commands10[💻 kubectl exec pod -- nslookup kubernetes.default<br/>kubectl exec pod -- ping api-server-ip<br/>kubectl get networkpolicies]
+    ConnectionStability --> Commands11[💻 kubectl exec pod -- timeout 60 sh -c<br/>'while true; do nc -zv api 443; sleep 5; done'<br/>Monitor connection drops]
+    
+    %% Styling
+    classDef issue fill:#ffebee,stroke:#c62828,stroke-width:2px
+    classDef fix fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
+    classDef check fill:#fff3e0,stroke:#ef6c00,stroke-width:2px
+    classDef command fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
+    classDef leaderElection fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef network fill:#e8eaf6,stroke:#3f51b5,stroke-width:2px
+    
+    class Start,MasterIssue,NodeIssue,PodFailure,LeaderElectionFlow issue
+    class FixAPI,FixEtcd,FixScheduler,FixKubelet,FixRuntime,FixNetwork,FixImage,FixConfig,FixLease,TuneLeaderElection fix
+    class CheckCluster,CheckNodes,CheckPods,APIDown,CheckEtcd,CheckScheduler,KubeletDown,CheckRuntime,CheckNetwork,PodScheduling,CheckLogs,ImageIssue,ConfigIssue,LeaderElectionIssue,CheckLease,LeaseHealthy,CheckAPIConnectivity,NetworkConnectivity,NetworkPathTest check
+    class Commands1,Commands2,Commands3,Commands4,Commands5,Commands6,Commands7,Commands8,Commands9,Commands10,Commands11 command
+    class CheckLease,CheckAPIConnectivity,TuneLeaderElection,APIConnectivityIssue leaderElection
+    class NetworkDiagnostics,NetworkPathTest,ConnectionStability,ReturnToNetworkFix network
