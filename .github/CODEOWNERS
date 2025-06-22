@@ -1,0 +1,19 @@
+# Global code owners
+* @mak-aravind
+
+# Specific file patterns
+*.md @mak-aravind
+*.py @mak-aravind
+*.js @mak-aravind
+*.ts @mak-aravind
+*.yml @mak-aravind
+*.yaml @mak-aravind
+*.json @mak-aravind
+Dockerfile @mak-aravind
+Makefile @mak-aravind
+requirements.txt @mak-aravind
+package.json @mak-aravind
+
+# Configuration files
+.github/ @mak-aravind
+.gitignore @mak-aravind
