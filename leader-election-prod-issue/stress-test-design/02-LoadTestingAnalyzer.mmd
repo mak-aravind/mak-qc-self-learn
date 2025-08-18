@@ -1,0 +1,114 @@
+graph TB
+    %% Input Layer
+    subgraph Input["Input Layer"]
+        A1["📁 input_files.txt<br/>List of JSON files"]
+        A2["📄 baseline_200_tenants.json<br/>Load test data"]
+        A3["📄 smallscale_400_tenants.json<br/>Load test data"]
+        A4["📄 foundation_800_tenants.json<br/>Load test data"]
+        A5["⚙️ Command Line Args<br/>--single, --no-insights"]
+    end
+
+    %% Core Engine
+    subgraph Core["Core Analysis Engine"]
+        B1["🎯 MultiFileLoadTestAnalyzer<br/>Main orchestrator class"]
+        B2["📊 File Discovery Engine<br/>load_file_list()"]
+        B3["🔄 Data Preprocessor<br/>load_and_preprocess_single_file()"]
+        B4["📈 Statistical Analyzer<br/>analyze_single_dataset()"]
+        B5["🔀 Comparative Engine<br/>perform_comparative_analysis()"]
+    end
+
+    %% Processing Modules
+    subgraph Analysis["Analysis Modules"]
+        C1["📊 Duration Statistics<br/>Mean, Median, Percentiles"]
+        C2["⚡ Instant Reconciliation<br/>Zero-duration detection"]
+        C3["🚨 Outlier Detection<br/>IQR-based analysis"]
+        C4["📈 Scaling Behavior<br/>Efficiency calculations"]
+        C5["💡 Insights Generator<br/>Performance recommendations"]
+    end
+
+    %% Data Storage
+    subgraph Data["Data Management"]
+        D1["🗄️ datasets<br/>Raw data store"]
+        D2["📋 analysis_results<br/>Processed metrics"]
+        D3["🔀 comparison_metrics<br/>Comparative analysis"]
+    end
+
+    %% External Dependencies
+    subgraph External["External Libraries"]
+        E1["🐼 pandas<br/>DataFrame operations"]
+        E2["🔢 numpy<br/>Statistical calculations"]
+        E3["📅 datetime<br/>Time processing"]
+        E4["📂 pathlib<br/>File path handling"]
+        E5["📄 json<br/>Data parsing"]
+    end
+
+    %% Output Layer
+    subgraph Output["Output Generation"]
+        F1["🌐 HTML Report Generator<br/>generate_html_report()"]
+        F2["🖥️ Console Logger<br/>print_detailed_analysis()"]
+        F3["📊 Performance Leaders<br/>Best/worst identification"]
+        F4["📈 Scaling Analysis<br/>Step-by-step breakdown"]
+    end
+
+    %% Final Outputs
+    subgraph Final["Final Outputs"]
+        G1["📄 HTML Report<br/>multi_load_test_report_YYYYMMDD.html"]
+        G2["🖥️ Console Output<br/>Detailed metrics & insights"]
+    end
+
+    %% Data Flow Connections
+    A1 --> B2
+    A2 --> B3
+    A3 --> B3
+    A4 --> B3
+    A5 --> B1
+
+    B1 --> B2
+    B2 --> B3
+    B3 --> B4
+    B4 --> B5
+
+    B3 --> D1
+    B4 --> D2
+    B5 --> D3
+
+    B4 --> C1
+    B4 --> C2
+    B4 --> C3
+    B5 --> C4
+    B5 --> C5
+
+    %% External library usage
+    B3 -.-> E1
+    B3 -.-> E5
+    B3 -.-> E3
+    B2 -.-> E4
+    C1 -.-> E2
+    C3 -.-> E2
+    C4 -.-> E2
+
+    %% Output generation
+    D2 --> F1
+    D3 --> F1
+    D2 --> F2
+    D3 --> F2
+    D3 --> F3
+    D3 --> F4
+
+    F1 --> G1
+    F2 --> G2
+
+    %% Styling
+    classDef inputStyle fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef engineStyle fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef moduleStyle fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
+    classDef dataStyle fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef libStyle fill:#fce4ec,stroke:#880e4f,stroke-width:2px
+    classDef outputStyle fill:#e0f2f1,stroke:#004d40,stroke-width:2px
+
+    class A1,A2,A3,A4,A5 inputStyle
+    class B1,B2,B3,B4,B5 engineStyle
+    class C1,C2,C3,C4,C5 moduleStyle
+    class D1,D2,D3 dataStyle
+    class E1,E2,E3,E4,E5 libStyle
+    class F1,F2,F3,F4,G1,G2 outputStyle

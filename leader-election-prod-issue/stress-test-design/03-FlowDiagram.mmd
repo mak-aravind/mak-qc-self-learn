@@ -1,0 +1,65 @@
+flowchart TD
+    A[make k8s-nexus-switch-local] --> B{Local development mode?}
+    
+    %% Local development path
+    B -->|Yes| C[Start tenant operator in debug mode]
+    
+    %% Environment path  
+    B -->|No| D[Find operator's leader pod and<br/>stream pod's log to environment<br/>specific log file]
+    
+    %% Convergence
+    C --> E[make k8s-nexus-unload-tenants]
+    D --> E
+    E --> F[make k8s-nexus-count-all]
+    
+    %% Cleanup phase conditional
+    F --> G{Local development mode?}
+    
+    %% Local cleanup path
+    G -->|Yes| H[make helm-delete-one-time-job-local-dev-sandbox]
+    H --> I[Stop tenant operator in debug mode]
+    I --> J[Remove debug_output.log]
+    
+    %% Environment cleanup path
+    G -->|No| K[Delete appropriate environment's job]
+    
+    %% Convergence after cleanup
+    J --> L[make k8s-nexus-count-all]
+    K --> L
+    L --> M{make k8s-get-contexts}
+    
+    %% Deploy phase conditional
+    M --> N{Local development mode?}
+    
+    %% Local deploy path
+    N -->|Yes| O[make helm-create-one-time-job-local-dev-sandbox]
+    
+    %% Environment deploy path
+    N -->|No| P[Create appropriate environment's job]
+    
+    %% Convergence and verification
+    O --> Q[Verify blueprintInstance, ExternalSecret readiness]
+    P --> Q
+    Q --> R[Verify Tenant readiness]
+    R --> S[make build-reconciliation-monitor]
+    S --> T[make summarize-local-sanbox-logs-analization]
+    T --> U[make write-local-sandbox-analysis-result-to-json]
+    
+    %% Styling for different phases and modes
+    classDef setup fill:#e1f5fe
+    classDef decision fill:#fff3e0,stroke:#ff9800,stroke-width:2px
+    classDef local fill:#e8f5e8
+    classDef environment fill:#ffebee
+    classDef common fill:#f3e5f5
+    classDef verify fill:#fff8e1
+    classDef analysis fill:#fce4ec
+    classDef optional fill:#f5f5f5,stroke-dasharray: 5 5
+    
+    class A setup
+    class B,G,N decision
+    class C,H,I,J,O local
+    class D,K,P environment
+    class E,F,L,Q,R common
+    class Q,R verify
+    class S,T,U analysis
+    class M optional

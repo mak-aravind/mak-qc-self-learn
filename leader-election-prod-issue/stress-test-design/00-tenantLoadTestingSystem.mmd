@@ -1,0 +1,121 @@
+graph TB
+    %% External Components
+    Dev[Developer] 
+    GitRepo[Git Repository - nexus-provisioning-management]
+    DockerReg[Docker Registry - localhost:5005]
+    
+    %% CI/CD Pipeline
+    subgraph CICD["CI/CD Pipeline"]
+        GHA[GitHub Actions]
+        ArgoCD[ArgoCD GitOps]
+    end
+    
+    %% Deployment Infrastructure
+    subgraph Deploy["Deployment Infrastructure"]
+        HelmChart[Helm Chart - tenant-loadtest]
+        HelmValues[Values Files - dev/staging/prod]
+        Scripts[Helper Scripts - helm-release.sh - deploy-with-helm.sh]
+    end
+    
+    %% Main Application
+    subgraph TenantApp["Tenant Load Testing Application"]
+        subgraph CoreApp["Go Application"]
+            MainPkg[cmd/tenant-loadtest - main.go]
+            ConfigPkg[pkg/config - Environment Variables]
+            
+            subgraph Internal["internal/"]
+                GlobalInit[global/ - Global Initialization]
+                InitPkg[initialize/ - Prerequisites Setup]
+                SetupPkg[setup/ - Metrics Setup]
+                LoadTestPkg[loadtest/ - Execution Engine]
+                K8sPkg[k8s/ - Kubernetes Clients]
+                GenPkg[generator/ - CR Generators]
+                MetricsPkg[metrics/ - Prometheus Metrics]
+            end
+        end
+        
+        TestScripts[Test Scripts - test-components.sh - monitor-metrics.sh]
+    end
+    
+    %% Kubernetes Cluster
+    subgraph K8sCluster["Kubernetes Cluster"]
+        subgraph Operators["Custom Operators"]
+            TenantOp[Tenant Operator]
+            ConfigOp[Config Operator]
+            BlueprintOp[BlueprintInstance Operator]
+        end
+        
+        subgraph CRDs["Custom Resources"]
+            TenantCR[Tenant CRs]
+            CapReqCR[CapabilityRequirement CRs]
+            ResBlueCR[ResourceBlueprint CRs]
+            BlueprintCR[BlueprintInstance CRs]
+        end
+        
+        subgraph K8sResources["K8s Resources"]
+            Jobs[Jobs/CronJobs]
+            RBAC[ServiceAccount - ClusterRole - ClusterRoleBinding]
+            ConfigMaps[ConfigMaps]
+            Services[Services]
+        end
+    end
+    
+    %% Monitoring Stack
+    subgraph Monitoring["Observability Stack"]
+        PrometheusMetrics[Prometheus - Metrics Collection]
+        GrafanaDash[Grafana - Dashboards]
+        MetricsEndpoint[Metrics Endpoint - port 8080/metrics]
+        ServiceMonitor[ServiceMonitor - Prometheus Operator]
+    end
+    
+    %% Chaos Engineering
+    subgraph Chaos["Chaos Engineering"]
+        LitmusChaos[LitmusChaos Framework]
+        ChaosExp[Chaos Experiments - pod-delete - cpu-hog - network-delay]
+        ChaosScripts[Chaos Scripts - generate-chaos-experiments.sh]
+    end
+    
+    %% Data Flow Connections
+    Dev -->|commits code| GitRepo
+    GitRepo -->|triggers| GHA
+    GHA -->|builds and pushes| DockerReg
+    GHA -->|updates| ArgoCD
+    ArgoCD -->|deploys| HelmChart
+    
+    Dev -->|local development| Scripts
+    Scripts -->|deploys| HelmChart
+    
+    HelmChart -->|creates| K8sResources
+    HelmChart -->|uses| HelmValues
+    
+    K8sResources -->|runs| CoreApp
+    ConfigMaps -->|configures| ConfigPkg
+    
+    CoreApp -->|creates| CRDs
+    CRDs -->|processed by| Operators
+    Operators -->|creates| BlueprintCR
+    
+    CoreApp -->|exposes| MetricsEndpoint
+    MetricsEndpoint -->|scraped by| PrometheusMetrics
+    PrometheusMetrics -->|visualized in| GrafanaDash
+    ServiceMonitor -->|configures| PrometheusMetrics
+    
+    TestScripts -->|monitors| MetricsEndpoint
+    TestScripts -->|executes| CoreApp
+    
+    Chaos -->|injects faults into| K8sCluster
+    ChaosScripts -->|generates| ChaosExp
+    LitmusChaos -->|executes| ChaosExp
+    
+    %% Styling
+    classDef appComponent fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef k8sComponent fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef monitorComponent fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
+    classDef deployComponent fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef chaosComponent fill:#ffebee,stroke:#b71c1c,stroke-width:2px
+    
+    class TenantApp,CoreApp,MainPkg,ConfigPkg,Internal,GlobalInit,InitPkg,SetupPkg,LoadTestPkg,K8sPkg,GenPkg,MetricsPkg,TestScripts appComponent
+    class K8sCluster,Operators,CRDs,K8sResources,TenantOp,ConfigOp,BlueprintOp,TenantCR,CapReqCR,ResBlueCR,BlueprintCR,Jobs,RBAC,ConfigMaps,Services k8sComponent
+    class Monitoring,PrometheusMetrics,GrafanaDash,MetricsEndpoint,ServiceMonitor monitorComponent
+    class Deploy,HelmChart,HelmValues,Scripts,CICD,GHA,ArgoCD deployComponent
+    class Chaos,LitmusChaos,ChaosExp,ChaosScripts chaosComponent

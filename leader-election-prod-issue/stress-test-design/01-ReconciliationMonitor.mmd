@@ -1,0 +1,89 @@
+graph TB
+    %% External Systems
+    K8S[Kubernetes Cluster]
+    LT[Load Test System]
+    
+    %% Log Sources
+    LogFiles[Log Files<br/>JSON Format]
+    
+    %% Main Application Components
+    CLI[CLI Application<br/>main.go]
+    
+    %% Core Components
+    Monitor[Monitor<br/>Orchestration Layer]
+    Parser[Enhanced Parser<br/>Load Test Aware]
+    Sources[Log Sources<br/>Local/Remote]
+    
+    %% Configuration
+    Config[Configuration<br/>Load Test Settings<br/>Filtering Options]
+    
+    %% Data Processing
+    Events[Reconciliation Events<br/>Load Test Metadata]
+    Metrics[Aggregated Metrics<br/>Load Test Breakdown]
+    
+    %% Output Systems
+    JSON[JSON Output<br/>Detailed Analysis]
+    Summary[Summary Output<br/>Human Readable]
+    Files[Output Files]
+    
+    %% Data Flow
+    K8S -->|Generates| LogFiles
+    LT -->|Creates Tenants with<br/>Load Test Prefixes| K8S
+    
+    LogFiles --> Sources
+    CLI --> Config
+    CLI --> Monitor
+    
+    Config --> Monitor
+    Config --> Parser
+    
+    Monitor --> Sources
+    Monitor --> Parser
+    Sources -->|Log Stream| Parser
+    
+    Parser -->|Filtered Events| Events
+    Events --> Metrics
+    
+    Monitor --> Metrics
+    Metrics --> JSON
+    Metrics --> Summary
+    
+    JSON --> Files
+    Summary --> Files
+    
+    %% Key Features
+    subgraph "Enhanced Features"
+        LTF[Load Test Filtering<br/>Multiple Load Test IDs]
+        NLT[Non-Load-Test<br/>Event Inclusion]
+        META[Enhanced Metadata<br/>Load Test ID + UUID]
+    end
+    
+    Parser --> LTF
+    Parser --> NLT
+    Parser --> META
+    
+    %% Command Line Interface
+    subgraph "CLI Parameters"
+        LTID[--load-test-id]
+        LTF_CLI[--load-test-filter]
+        INCL[--include-non-load-test]
+        OUT[--output json/summary]
+    end
+    
+    CLI --> LTID
+    CLI --> LTF_CLI
+    CLI --> INCL
+    CLI --> OUT
+    
+    %% Styling
+    classDef external fill:#e1f5fe
+    classDef core fill:#f3e5f5
+    classDef data fill:#e8f5e8
+    classDef output fill:#fff3e0
+    classDef enhancement fill:#fce4ec
+    
+    class K8S,LT,LogFiles external
+    class CLI,Monitor,Parser,Sources core
+    class Events,Metrics,Config data
+    class JSON,Summary,Files output
+    class LTF,NLT,META enhancement
