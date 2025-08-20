@@ -51,8 +51,8 @@ graph TB
 
 ```mermaid
 flowchart LR
-    A[Original Matrix<br/>100 150 200] --> B[+ 50] --> C[Brighter Matrix<br/>150 200 250]
-    D[Original Matrix<br/>100 150 200] --> E[- 30] --> F[Darker Matrix<br/>70 120 170]
+    A[Original Matrix<br/>100 150 200] --> B[add 50] --> C[Brighter Matrix<br/>150 200 250]
+    D[Original Matrix<br/>100 150 200] --> E[substract 30] --> F[Darker Matrix<br/>70 120 170]
 ```
 
 **The math:** Add the same number to every pixel = brighter image!
